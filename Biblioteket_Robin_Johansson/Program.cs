@@ -11,6 +11,15 @@
                 ["5", "A song of ice and fire", "2"],
             ];
 
+        static string[][] users =
+            [
+                ["Yoda", "1337"],
+                ["Chewwy", "1111"],
+                ["Luke", "9988"],
+                ["Leia", "4545"],
+                ["Han", "1234"],
+            ];
+
         static void Main(string[] args)
         {
             BooksInLibrary();
