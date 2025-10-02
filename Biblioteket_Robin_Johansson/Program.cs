@@ -7,11 +7,19 @@ namespace Biblioteket_Robin_Johansson
     {
         static string[][] books =
             [
-                ["1", "Harry Potter", "2"],
-                ["2", "Sagan om ringen", "3"],
-                ["3", "Bamse i trollskogen", "5"],
-                ["4", "Throne of glass", "1"],
-                ["5", "A song of ice and fire", "2"],
+                ["1", "Harry Potter"],
+                ["2", "Sagan om ringen"],
+                ["3", "Bamse i trollskogen"],
+                ["4", "Throne of glass"],
+                ["5", "A song of ice and fire"],
+            ];
+
+        static int[] booksInStore =
+            [     2, // Harry Potter
+                  3, // Sagan om ringen
+                  5, // Bammse i trollskogen
+                  1, // Throne of glass
+                  2  // A song of ice and fire
             ];
 
         static string[][] users =
@@ -55,7 +63,7 @@ namespace Biblioteket_Robin_Johansson
                     break;
 
                 case 2:
-                    //borrow book
+                    LoanBooks();
                     break;
 
                 case 3:
@@ -74,6 +82,56 @@ namespace Biblioteket_Robin_Johansson
             }
         }
 
+        //Loan books method:
+        static void LoanBooks()
+        {
+            Console.Clear();
+            Console.WriteLine("Ange index-nummer på boken du vill låna.");
+
+            int userInput;
+            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
+            {
+                Console.WriteLine("Du måste ange ett nummer från listan.");
+            }
+
+            switch (userInput)
+            {
+                case 1:
+                    booksInStore[0] -= 1 ;
+                    Console.WriteLine($"Du lånade boken {books[0][1]}!");
+                    Console.WriteLine($"Det är nu {booksInStore[0]} ex av {books[0][1]} kvar i butiken.");
+                    break;
+
+                case 2:
+                    booksInStore[1] -= 1 ;
+                    Console.WriteLine($"Du lånade boken {books[1][1]}!");
+                    Console.WriteLine($"Det är nu {booksInStore[1]} ex av {books[1][1]} kvar i butiken.");
+                    break;
+
+                case 3:
+                    booksInStore[2] -= 1 ;
+                    Console.WriteLine($"Du lånade boken {books[2][1]}!");
+                    Console.WriteLine($"Det är nu {booksInStore[2]} ex av {books[2][1]} kvar i butiken.");
+                    break;
+
+                case 4:
+                    booksInStore[3] -= 1 ;
+                    Console.WriteLine($"Du lånade boken {books[3][1]}!");
+                    Console.WriteLine($"Det är nu {booksInStore[3]} ex av {books[3][1]} kvar i butiken.");
+                    break;
+
+                case 5:
+                    booksInStore[4] -= 1 ;
+                    Console.WriteLine($"Du lånade boken {books[4][1]}!");
+                    Console.WriteLine($"Det är nu {booksInStore[4]} ex av {books[4][1]} kvar i butiken.");
+                    break;
+            }
+
+            Console.ReadLine();
+
+            MainMenu();
+        }
+
         //Login method:
         static void LogIn()
         {
@@ -89,7 +147,7 @@ namespace Biblioteket_Robin_Johansson
             while (!success)
             {
 
-                Console.Write("Användarnamn:"); 
+                Console.Write("Användarnamn:");
                 string userName = Console.ReadLine();
                 Console.Write("Pinkod:");
                 string pinCode = Console.ReadLine();
@@ -119,7 +177,7 @@ namespace Biblioteket_Robin_Johansson
                     attempts--;
                 }
                 //If attempts are 0, the user does not get to try again without restartting the program:
-                if (attempts <1)
+                if (attempts < 1)
                 {
                     Console.WriteLine("\nDu lyckades inte logga in på 3 försök.");
                     Console.WriteLine("Programmet avslutas...");
@@ -129,14 +187,20 @@ namespace Biblioteket_Robin_Johansson
             }
 
         }
+
         //Method that displays the books in the library:
         static void BooksInLibrary()
         {
             Console.Clear();
 
-            foreach (string[] book in books)
+
+            for (int i = 0; i < books.Length; i++)
             {
-                Console.WriteLine($"{book[0]}. {book[1]}: {book[2]} st.");
+                string[] book = books[i];
+                int inStore = booksInStore[i];
+
+                Console.WriteLine($"{book[0]}. {book[1]}: {inStore} st.");
+
             }
             Console.WriteLine("\nTryck enter för att återgå till huvudmenyn.");
             Console.ReadLine();
