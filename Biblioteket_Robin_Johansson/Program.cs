@@ -5,6 +5,7 @@ namespace Biblioteket_Robin_Johansson
 {
     internal class Program
     {
+        // Contains the books in the library:
         static string[][] books =
             [
                 ["1", "Harry Potter"],
@@ -14,6 +15,7 @@ namespace Biblioteket_Robin_Johansson
                 ["5", "A song of ice and fire"],
             ];
 
+        // Contains how many of each book there are in store:
         static int[] booksInStore =
             [     2, // Harry Potter
                   3, // Sagan om ringen
@@ -22,6 +24,7 @@ namespace Biblioteket_Robin_Johansson
                   2  // A song of ice and fire
             ];
 
+        // Contains the authorised users and their pin-codes:
         static string[][] users =
             [
                 ["Yoda", "1337"],
@@ -56,6 +59,7 @@ namespace Biblioteket_Robin_Johansson
                 Console.WriteLine("Du måste ange ett nummer från listan.");
             }
 
+
             switch (userInput)
             {
                 case 1:
@@ -89,47 +93,34 @@ namespace Biblioteket_Robin_Johansson
             Console.WriteLine("Ange index-nummer på boken du vill låna.");
 
             int userInput;
-            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
+
+            while (true)
             {
-                Console.WriteLine("Du måste ange ett nummer från listan.");
+
+                while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
+                {
+                    Console.WriteLine("Du måste ange ett nummer från listan.");
+                }
+
+                // User input -1 because the array begins on 0.
+                int bookIndex = userInput - 1;
+
+                if (booksInStore[bookIndex] > 0)
+                {
+                    Console.WriteLine($"Du lånade boken {books[bookIndex][1]}.");
+                    Console.WriteLine($"Det finns nu {booksInStore[bookIndex] - 1} ex av boken kvar i biblioteket.");
+                    booksInStore[bookIndex] --;
+                    Console.ReadLine();
+                    MainMenu();
+                }
+                else
+                {
+                    Console.WriteLine($"Det finns tyvärr inga ex. kvar av {books[bookIndex][1]} just nu.");
+                    Console.ReadLine();
+                    MainMenu();
+                }
             }
-
-            switch (userInput)
-            {
-                case 1:
-                    booksInStore[0] -= 1 ;
-                    Console.WriteLine($"Du lånade boken {books[0][1]}!");
-                    Console.WriteLine($"Det är nu {booksInStore[0]} ex av {books[0][1]} kvar i butiken.");
-                    break;
-
-                case 2:
-                    booksInStore[1] -= 1 ;
-                    Console.WriteLine($"Du lånade boken {books[1][1]}!");
-                    Console.WriteLine($"Det är nu {booksInStore[1]} ex av {books[1][1]} kvar i butiken.");
-                    break;
-
-                case 3:
-                    booksInStore[2] -= 1 ;
-                    Console.WriteLine($"Du lånade boken {books[2][1]}!");
-                    Console.WriteLine($"Det är nu {booksInStore[2]} ex av {books[2][1]} kvar i butiken.");
-                    break;
-
-                case 4:
-                    booksInStore[3] -= 1 ;
-                    Console.WriteLine($"Du lånade boken {books[3][1]}!");
-                    Console.WriteLine($"Det är nu {booksInStore[3]} ex av {books[3][1]} kvar i butiken.");
-                    break;
-
-                case 5:
-                    booksInStore[4] -= 1 ;
-                    Console.WriteLine($"Du lånade boken {books[4][1]}!");
-                    Console.WriteLine($"Det är nu {booksInStore[4]} ex av {books[4][1]} kvar i butiken.");
-                    break;
-            }
-
-            Console.ReadLine();
-
-            MainMenu();
+          
         }
 
         //Login method:
@@ -161,7 +152,7 @@ namespace Biblioteket_Robin_Johansson
                         break;
                     }
                 }
-                //if the user gets it right, unlock the menu (success = true):
+                //if the user gets it right, unlock the main menu (success = true):
                 if (success)
                 {
                     Console.WriteLine($"välkommen {userName}!");
@@ -170,7 +161,7 @@ namespace Biblioteket_Robin_Johansson
                     MainMenu();
                     success = true;
                 }
-                //For every attempt 'attempts' subtracts by -1:
+                //For every failed login, 'attempts' subtracts by -1:
                 else
                 {
                     Console.WriteLine("\nOgiltigt användarnamn eller lösenord.");
