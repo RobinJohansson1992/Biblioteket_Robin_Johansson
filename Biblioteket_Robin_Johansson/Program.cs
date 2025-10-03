@@ -24,6 +24,16 @@ namespace Biblioteket_Robin_Johansson
                   2  // A song of ice and fire
             ];
 
+        // Stores how many of each book the user has on loan.
+        static int[] loanedBooks =
+            [
+                  0, // Harry Potter
+                  0, // Sagan om ringen
+                  0, // Bammse i trollskogen
+                  0, // Throne of glass
+                  0  // A song of ice and fire
+            ];
+
         // Contains the authorised users and their pin-codes:
         static string[][] users =
             [
@@ -71,7 +81,7 @@ namespace Biblioteket_Robin_Johansson
                     break;
 
                 case 3:
-                    //return book
+                    ReturnBooks();
                     break;
 
                 case 4:
@@ -86,6 +96,54 @@ namespace Biblioteket_Robin_Johansson
             }
         }
 
+        //Return books method:
+
+        static void ReturnBooks()
+        {
+            Console.Clear();
+            Console.WriteLine("Ange index-nummer på boken du vill lämna tillbaka:\n");
+
+            //Forloop looks through the books in books:
+            for (int i = 0; i < books.Length; i++)
+            {
+                string[] book = books[i];
+                int onLoan = loanedBooks[i];
+
+                //If the user dont have a book on loan, dont display that book.
+                if (onLoan > 0)
+                {
+                    Console.WriteLine($"{book[0]}. {book[1]}: {onLoan} st.");
+                }
+            }
+
+            int userInput;
+
+            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput <= 0 || userInput > 5)
+            {
+                Console.WriteLine("Du måste ange index-nummer till boken du vill lämna tillbaka.");
+            }
+
+            // User input -1 because the array begins on 0.
+            int bookIndex = userInput - 1;
+
+            if (loanedBooks[bookIndex] > 0)
+            {
+                Console.WriteLine($"Du lämnade tillbaka boken {books[bookIndex][1]}.");
+                Console.WriteLine($"Det finns nu {booksInStore[bookIndex] + 1} ex av boken i biblioteket.");
+                booksInStore[bookIndex]++;
+                loanedBooks[bookIndex]--;
+                Console.ReadLine();
+                MainMenu();
+            }
+            else
+            {
+                Console.WriteLine($"Du har inte ett aktivt lån av {books[bookIndex][1]} just nu.");
+                Console.WriteLine("Tryck enter för att återgå till huvudmenyn.");
+                Console.ReadLine();
+                MainMenu();
+            }
+        }
+
         //Loan books method:
         static void LoanBooks()
         {
@@ -94,33 +152,31 @@ namespace Biblioteket_Robin_Johansson
 
             int userInput;
 
-            while (true)
+
+            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
             {
-
-                while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
-                {
-                    Console.WriteLine("Du måste ange ett nummer från listan.");
-                }
-
-                // User input -1 because the array begins on 0.
-                int bookIndex = userInput - 1;
-
-                if (booksInStore[bookIndex] > 0)
-                {
-                    Console.WriteLine($"Du lånade boken {books[bookIndex][1]}.");
-                    Console.WriteLine($"Det finns nu {booksInStore[bookIndex] - 1} ex av boken kvar i biblioteket.");
-                    booksInStore[bookIndex] --;
-                    Console.ReadLine();
-                    MainMenu();
-                }
-                else
-                {
-                    Console.WriteLine($"Det finns tyvärr inga ex. kvar av {books[bookIndex][1]} just nu.");
-                    Console.ReadLine();
-                    MainMenu();
-                }
+                Console.WriteLine("Du måste ange ett nummer från listan.");
             }
-          
+
+            // User input -1 because the array begins on 0.
+            int bookIndex = userInput - 1;
+
+            if (booksInStore[bookIndex] > 0)
+            {
+                Console.WriteLine($"Du lånade boken {books[bookIndex][1]}.");
+                Console.WriteLine($"Det finns nu {booksInStore[bookIndex] - 1} ex av boken i biblioteket.");
+                booksInStore[bookIndex]--;
+                loanedBooks[bookIndex]++;
+                Console.ReadLine();
+                MainMenu();
+            }
+            else
+            {
+                Console.WriteLine($"Det finns tyvärr inga ex. kvar av {books[bookIndex][1]} just nu.");
+                Console.ReadLine();
+                MainMenu();
+            }
+
         }
 
         //Login method:
