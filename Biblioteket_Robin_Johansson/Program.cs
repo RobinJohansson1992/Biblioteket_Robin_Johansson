@@ -19,7 +19,7 @@ namespace Biblioteket_Robin_Johansson
         static int[] booksInStore =
             [     2, // Harry Potter
                   3, // Sagan om ringen
-                  5, // Bammse i trollskogen
+                  5, // Bamse i trollskogen
                   1, // Throne of glass
                   2  // A song of ice and fire
             ];
@@ -85,7 +85,7 @@ namespace Biblioteket_Robin_Johansson
                     break;
 
                 case 4:
-                    //Display loans
+                    DisplayLoans();
                     break;
 
                 case 5:
@@ -96,8 +96,39 @@ namespace Biblioteket_Robin_Johansson
             }
         }
 
-        //Return books method:
+        //Display loans method:
+        static void DisplayLoans()
+        {
+            Console.Clear();
+            bool loans = false;
 
+            //Looks through every book in "books".
+            for (int i = 0; i < books.Length; i++)
+            {
+                //book stores every individual book
+                string[] book = books[i];
+                //onLoan stores current value of every book from "loanedBooks"
+                int onLoan = loanedBooks[i];
+
+                //If there are any books on loan, display that book and how many is on loan:
+                if (onLoan > 0)
+                {
+                    loans = true;
+                    Console.WriteLine($"{book[1]}: {onLoan} ex.");
+                }
+            }
+
+            //If there are no current loans, display this message:
+            if (!loans)
+            {
+                Console.WriteLine("Du har inga lån just nu.");
+            }
+
+            Console.ReadLine();
+            MainMenu();
+        }
+
+        //Return books method:
         static void ReturnBooks()
         {
             Console.Clear();
@@ -106,7 +137,9 @@ namespace Biblioteket_Robin_Johansson
             //Forloop looks through the books in books:
             for (int i = 0; i < books.Length; i++)
             {
+                //Array book stores each book in books
                 string[] book = books[i];
+                //onLoan stores the current value of every book 
                 int onLoan = loanedBooks[i];
 
                 //If the user dont have a book on loan, dont display that book.
@@ -211,7 +244,7 @@ namespace Biblioteket_Robin_Johansson
                 //if the user gets it right, unlock the main menu (success = true):
                 if (success)
                 {
-                    Console.WriteLine($"välkommen {userName}!");
+                    Console.WriteLine($"Välkommen {userName}!");
                     Console.WriteLine("Tryck enter för att gå till menyn");
                     Console.ReadLine();
                     MainMenu();
