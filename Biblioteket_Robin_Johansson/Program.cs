@@ -17,7 +17,8 @@ namespace Biblioteket_Robin_Johansson
 
         // Contains how many of each book there are in store:
         static int[] booksInStore =
-            [     2, // Harry Potter
+            [     
+                  2, // Harry Potter
                   3, // Sagan om ringen
                   5, // Bamse i trollskogen
                   1, // Throne of glass
@@ -51,6 +52,14 @@ namespace Biblioteket_Robin_Johansson
 
         }
 
+        //Back to MainMenu method:
+        static void BackToMainMenu()
+        {
+            Console.WriteLine("\nTryck enter för att återgå till huvudmenyn.");
+            Console.ReadLine();
+            MainMenu();
+        }
+
         //Try parse method
         static int TryParse(int min, int max)
         {
@@ -74,7 +83,7 @@ namespace Biblioteket_Robin_Johansson
             Console.WriteLine("4. Mina lån");
             Console.WriteLine("5. Logga ut");
 
-
+            //Switch makes the user chose from the list, TryParse makes it failsafe:
             switch (TryParse(1, 5))
             {
                 case 1:
@@ -105,7 +114,8 @@ namespace Biblioteket_Robin_Johansson
         static void DisplayLoans()
         {
             Console.Clear();
-            bool loans = false;
+
+            Console.WriteLine("Dina lån:\n");
 
             //Looks through every book in "books".
             for (int i = 0; i < books.Length; i++)
@@ -118,25 +128,37 @@ namespace Biblioteket_Robin_Johansson
                 //If there are any books on loan, display that book and how many is on loan:
                 if (onLoan > 0)
                 {
-                    loans = true;
                     Console.WriteLine($"{book[1]}: {onLoan} ex.");
                 }
             }
 
-            //If there are no current loans, display this message:
-            if (!loans)
-            {
-                Console.WriteLine("Du har inga lån just nu.");
-            }
+            BackToMainMenu();
 
-            Console.ReadLine();
-            MainMenu();
         }
 
         //Return books method:
         static void ReturnBooks()
         {
             Console.Clear();
+
+            //If the user dont have any books on loan:
+            bool noBooks = true;
+
+            for (int i = 0; i < loanedBooks.Length; i++)
+            {
+                if (loanedBooks[i] != 0)
+                {
+                    noBooks = false;
+                }
+            }
+
+            if (noBooks)
+            {
+                Console.WriteLine("Du har inga aktiva lån just nu.\n");
+                BackToMainMenu();
+            }
+
+            //If the user has loaned book(s):
             Console.WriteLine("Ange index-nummer på boken du vill lämna tillbaka:\n");
 
             //Forloop looks through the books in books:
@@ -157,21 +179,21 @@ namespace Biblioteket_Robin_Johansson
             // bookIndex = TryParse -1 because the array begins on 0.
             int bookIndex = TryParse(1, 5) - 1;
 
+            //If the balance for the book the user wants to return is more than 0, write this:
             if (loanedBooks[bookIndex] > 0)
             {
                 Console.WriteLine($"Du lämnade tillbaka boken {books[bookIndex][1]}.");
                 Console.WriteLine($"Det finns nu {booksInStore[bookIndex] + 1} ex av boken i biblioteket.");
                 booksInStore[bookIndex]++;
                 loanedBooks[bookIndex]--;
-                Console.ReadLine();
-                MainMenu();
+                BackToMainMenu();
             }
+            
+            //If the balance for the book the user wants to return is 0, write this:
             else
             {
                 Console.WriteLine($"Du har inte ett aktivt lån av {books[bookIndex][1]} just nu.");
-                Console.WriteLine("Tryck enter för att återgå till huvudmenyn.");
-                Console.ReadLine();
-                MainMenu();
+                BackToMainMenu();
             }
         }
 
@@ -186,20 +208,20 @@ namespace Biblioteket_Robin_Johansson
             // bookIndex = TryParse -1 because the array begins on 0.
             int bookIndex = TryParse(1, 5) - 1;
 
+            
+
             if (booksInStore[bookIndex] > 0)
             {
                 Console.WriteLine($"Du lånade boken {books[bookIndex][1]}.");
                 Console.WriteLine($"Det finns nu {booksInStore[bookIndex] - 1} ex av boken i biblioteket.");
                 booksInStore[bookIndex]--;
                 loanedBooks[bookIndex]++;
-                Console.ReadLine();
-                MainMenu();
+                BackToMainMenu();
             }
             else
             {
                 Console.WriteLine($"Det finns tyvärr inga ex. kvar av {books[bookIndex][1]} just nu.");
-                Console.ReadLine();
-                MainMenu();
+                BackToMainMenu();
             }
 
         }
@@ -245,7 +267,7 @@ namespace Biblioteket_Robin_Johansson
                 //For every failed login, 'attempts' subtracts by -1:
                 else
                 {
-                    Console.WriteLine("\nOgiltigt användarnamn eller lösenord.");
+                    Console.WriteLine("\nOgiltigt användarnamn eller pinkod.");
                     attempts--;
                 }
                 //If attempts are 0, the user does not get to try again without restartting the program:
@@ -267,10 +289,8 @@ namespace Biblioteket_Robin_Johansson
             Console.WriteLine("Tillgängliga böcker i biblioteket:\n");
 
             DisplayBooks();
-            
-            Console.WriteLine("\nTryck enter för att återgå till huvudmenyn.");
-            Console.ReadLine();
-            MainMenu();
+
+            BackToMainMenu();
         }
 
         //Displays the books in the library:
