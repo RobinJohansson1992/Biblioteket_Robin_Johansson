@@ -51,6 +51,17 @@ namespace Biblioteket_Robin_Johansson
 
         }
 
+        //Try parse method
+        static int TryParse(int min, int max)
+        {
+            int userInput;
+            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < min || userInput > max)
+            {
+                Console.WriteLine("Du måste ange ett nummer från listan.");
+            }
+            return userInput;
+        }
+
         //Method that displays the main menu:
         static void MainMenu()
         {
@@ -63,14 +74,8 @@ namespace Biblioteket_Robin_Johansson
             Console.WriteLine("4. Mina lån");
             Console.WriteLine("5. Logga ut");
 
-            int userInput;
-            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
-            {
-                Console.WriteLine("Du måste ange ett nummer från listan.");
-            }
 
-
-            switch (userInput)
+            switch (TryParse(1, 5))
             {
                 case 1:
                     BooksInLibrary();
@@ -149,15 +154,8 @@ namespace Biblioteket_Robin_Johansson
                 }
             }
 
-            int userInput;
-
-            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput <= 0 || userInput > 5)
-            {
-                Console.WriteLine("Du måste ange index-nummer till boken du vill lämna tillbaka.");
-            }
-
-            // User input -1 because the array begins on 0.
-            int bookIndex = userInput - 1;
+            // bookIndex = TryParse -1 because the array begins on 0.
+            int bookIndex = TryParse(1, 5) - 1;
 
             if (loanedBooks[bookIndex] > 0)
             {
@@ -181,18 +179,12 @@ namespace Biblioteket_Robin_Johansson
         static void LoanBooks()
         {
             Console.Clear();
-            Console.WriteLine("Ange index-nummer på boken du vill låna.");
+            Console.WriteLine("Ange index-nummer på boken du vill låna.\n");
 
-            int userInput;
+            DisplayBooks();
 
-
-            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
-            {
-                Console.WriteLine("Du måste ange ett nummer från listan.");
-            }
-
-            // User input -1 because the array begins on 0.
-            int bookIndex = userInput - 1;
+            // bookIndex = TryParse -1 because the array begins on 0.
+            int bookIndex = TryParse(1, 5) - 1;
 
             if (booksInStore[bookIndex] > 0)
             {
@@ -272,8 +264,18 @@ namespace Biblioteket_Robin_Johansson
         static void BooksInLibrary()
         {
             Console.Clear();
+            Console.WriteLine("Tillgängliga böcker i biblioteket:\n");
 
+            DisplayBooks();
+            
+            Console.WriteLine("\nTryck enter för att återgå till huvudmenyn.");
+            Console.ReadLine();
+            MainMenu();
+        }
 
+        //Displays the books in the library:
+        static void DisplayBooks()
+        {
             for (int i = 0; i < books.Length; i++)
             {
                 string[] book = books[i];
@@ -282,9 +284,6 @@ namespace Biblioteket_Robin_Johansson
                 Console.WriteLine($"{book[0]}. {book[1]}: {inStore} st.");
 
             }
-            Console.WriteLine("\nTryck enter för att återgå till huvudmenyn.");
-            Console.ReadLine();
-            MainMenu();
         }
     }
 }
