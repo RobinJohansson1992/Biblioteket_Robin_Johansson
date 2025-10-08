@@ -202,13 +202,25 @@ namespace Biblioteket_Robin_Johansson
         {
             Console.Clear();
             Console.WriteLine("Ange index-nummer på boken du vill låna.\n");
+            Console.WriteLine("Du får ha max 3 aktiva lån.\n");
 
             DisplayBooks();
 
             // bookIndex = TryParse -1 because the array begins on 0.
             int bookIndex = TryParse(1, 5) - 1;
 
-            
+            int sum = 0;
+            foreach (int book in loanedBooks)
+            {
+                sum += book;
+            }
+            //If user has 3 books on loan, write this:
+            if (sum > 2)
+            {
+
+                Console.WriteLine("Du har redan lånat max antal böcker.");
+                BackToMainMenu();
+            }
 
             if (booksInStore[bookIndex] > 0)
             {
