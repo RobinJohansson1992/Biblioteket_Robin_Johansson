@@ -25,25 +25,22 @@ namespace Biblioteket_Robin_Johansson
                   2  // A song of ice and fire
             ];
 
-        // Stores how many of each book the user has on loan.
-        static int[] loanedBooks =
-            [
-                  0, // Harry Potter
-                  0, // Sagan om ringen
-                  0, // Bammse i trollskogen
-                  0, // Throne of glass
-                  0  // A song of ice and fire
-            ];
+        // Stores how many of each book the user has on loan. ([users, number of books])
+        static int[,] usersLoanedBooks = new int[5, 5];
+
+        //currentUser is used to link what user in the array is logged in and wich books they have
+        static int currentUser = -1;
 
         // Contains the authorised users and their pin-codes:
         static string[][] users =
             [
-                ["Yoda", "1337"],
+                ["Yoda", "1337"],  
                 ["Chewwy", "1111"],
-                ["Luke", "9988"],
-                ["Leia", "4545"],
-                ["Han", "1234"],
+                ["Luke", "9988"],  
+                ["Leia", "4545"],  
+                ["Han", "1234"],   
             ];
+
 
         static void Main(string[] args)
         {
@@ -64,10 +61,16 @@ namespace Biblioteket_Robin_Johansson
         static int TryParse(int min, int max)
         {
             int userInput;
+            
             while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < min || userInput > max)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Clear();
                 Console.WriteLine("Du måste ange ett nummer från listan.");
+                Console.ResetColor();
+                BackToMainMenu();
             }
+            
             return userInput;
         }
 
@@ -117,13 +120,12 @@ namespace Biblioteket_Robin_Johansson
 
             Console.WriteLine("Dina lån:\n");
 
-            //Looks through every book in "books".
             for (int i = 0; i < books.Length; i++)
             {
                 //book stores every individual book
                 string[] book = books[i];
-                //onLoan stores current value of every book from "loanedBooks"
-                int onLoan = loanedBooks[i];
+                //onLoan stores the users current value of every book from "usersLoanedBooks"
+                int onLoan = usersLoanedBooks[currentUser, i];
 
                 //If there are any books on loan, display that book and how many is on loan:
                 if (onLoan > 0)
@@ -133,7 +135,6 @@ namespace Biblioteket_Robin_Johansson
             }
 
             BackToMainMenu();
-
         }
 
         //Return books method:
@@ -142,21 +143,23 @@ namespace Biblioteket_Robin_Johansson
             Console.Clear();
 
             //If the user dont have any books on loan:
+            //-----------------------------------------------------------------------------------------//
             bool noBooks = true;
 
-            for (int i = 0; i < loanedBooks.Length; i++)
+            //GetLength choose which part of the 2D array should be used (0/1)
+            for (int i = 0; i < usersLoanedBooks.GetLength(1); i++)
             {
-                if (loanedBooks[i] != 0)
+                if (usersLoanedBooks[currentUser, i] != 0)
                 {
                     noBooks = false;
                 }
             }
-
             if (noBooks)
             {
                 Console.WriteLine("Du har inga aktiva lån just nu.\n");
                 BackToMainMenu();
             }
+            //-----------------------------------------------------------------------------------------//
 
             //If the user has loaned book(s):
             Console.WriteLine("Ange index-nummer på boken du vill lämna tillbaka:\n");
@@ -164,10 +167,10 @@ namespace Biblioteket_Robin_Johansson
             //Forloop looks through the books in books:
             for (int i = 0; i < books.Length; i++)
             {
-                //Array book stores each book in books
+                //Array book stores each book in books:
                 string[] book = books[i];
-                //onLoan stores the current value of every book 
-                int onLoan = loanedBooks[i];
+                //onLoan stores the current value of every book the user has on loan:
+                int onLoan = usersLoanedBooks[currentUser, i];
 
                 //If the user dont have a book on loan, dont display that book.
                 if (onLoan > 0)
@@ -175,26 +178,31 @@ namespace Biblioteket_Robin_Johansson
                     Console.WriteLine($"{book[0]}. {book[1]}: {onLoan} st.");
                 }
             }
-
             // bookIndex = TryParse -1 because the array begins on 0.
             int bookIndex = TryParse(1, 5) - 1;
 
             //If the balance for the book the user wants to return is more than 0, write this:
-            if (loanedBooks[bookIndex] > 0)
+            if (usersLoanedBooks[currentUser, bookIndex] > 0)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Du lämnade tillbaka boken {books[bookIndex][1]}.");
-                Console.WriteLine($"Det finns nu {booksInStore[bookIndex] + 1} ex av boken i biblioteket.");
+                Console.ResetColor();
+                Console.WriteLine($"- Det finns nu {booksInStore[bookIndex] + 1} ex av boken i biblioteket.");
                 booksInStore[bookIndex]++;
-                loanedBooks[bookIndex]--;
+                usersLoanedBooks[currentUser, bookIndex]--;
                 BackToMainMenu();
             }
-            
+
             //If the balance for the book the user wants to return is 0, write this:
             else
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Du har inte ett aktivt lån av {books[bookIndex][1]} just nu.");
+                Console.ResetColor();
                 BackToMainMenu();
             }
+
+            
         }
 
         //Loan books method:
@@ -203,36 +211,42 @@ namespace Biblioteket_Robin_Johansson
             Console.Clear();
             Console.WriteLine("Ange index-nummer på boken du vill låna.\n");
             Console.WriteLine("Du får ha max 3 aktiva lån.\n");
-
             DisplayBooks();
 
             // bookIndex = TryParse -1 because the array begins on 0.
             int bookIndex = TryParse(1, 5) - 1;
 
+            //sum = total books the user has on loan
             int sum = 0;
-            foreach (int book in loanedBooks)
+            for (int i = 0; i < books.Length; i++)
             {
-                sum += book;
+                sum += usersLoanedBooks[currentUser, i];
             }
-            //If user has 3 books on loan, write this:
+            //If user already has 3 books on loan, write this:
             if (sum > 2)
             {
-
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Du har redan lånat max antal böcker.");
+                Console.ResetColor();
+                Console.WriteLine("- Du måste lämna tillbaka en bok innan du kan låna igen.");
                 BackToMainMenu();
             }
 
             if (booksInStore[bookIndex] > 0)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Du lånade boken {books[bookIndex][1]}.");
+                Console.ResetColor();
                 Console.WriteLine($"Det finns nu {booksInStore[bookIndex] - 1} ex av boken i biblioteket.");
                 booksInStore[bookIndex]--;
-                loanedBooks[bookIndex]++;
+                usersLoanedBooks[currentUser, bookIndex]++;
                 BackToMainMenu();
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Det finns tyvärr inga ex. kvar av {books[bookIndex][1]} just nu.");
+                Console.ResetColor();
                 BackToMainMenu();
             }
 
@@ -250,7 +264,7 @@ namespace Biblioteket_Robin_Johansson
             int attempts = 3;
 
             //Loop that allows the user three attemps to log in:
-            while (!success)
+            while (!success && attempts > 0)
             {
 
                 Console.Write("Användarnamn:");
@@ -258,19 +272,22 @@ namespace Biblioteket_Robin_Johansson
                 Console.Write("Pinkod:");
                 string pinCode = Console.ReadLine();
 
-                //Compare each user in users if the username and pincode match:
-                foreach (var user in users)
+                //Compare each user in users if the username and pincode match and link user to "currentUser":
+                for (int i = 0; i < users.Length; i++)
                 {
-                    if (user[0] == userName && user[1] == pinCode)
+                    if (users[i][0] == userName && users[i][1] == pinCode)
                     {
                         success = true;
+                        currentUser = i;
                         break;
                     }
                 }
                 //if the user gets it right, unlock the main menu (success = true):
                 if (success)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Välkommen {userName}!");
+                    Console.ResetColor();
                     Console.WriteLine("Tryck enter för att gå till menyn");
                     Console.ReadLine();
                     MainMenu();
@@ -279,7 +296,9 @@ namespace Biblioteket_Robin_Johansson
                 //For every failed login, 'attempts' subtracts by -1:
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\nOgiltigt användarnamn eller pinkod.");
+                    Console.ResetColor();
                     attempts--;
                 }
                 //If attempts are 0, the user does not get to try again without restartting the program:
@@ -289,9 +308,7 @@ namespace Biblioteket_Robin_Johansson
                     Console.WriteLine("Programmet avslutas...");
                     Environment.Exit(0);
                 }
-
             }
-
         }
 
         //Method that displays the books in the library:
