@@ -25,7 +25,7 @@ namespace Biblioteket_Robin_Johansson
                   2  // A song of ice and fire
             ];
 
-        // Stores how many of each book the user has on loan. ([users, number of books])
+        // Stores how many of each book each user has on loan. ([users, number of books])
         static int[,] usersLoanedBooks = new int[5, 5];
 
         //currentUser is used to link what user in the array is logged in and wich books they have
@@ -38,10 +38,12 @@ namespace Biblioteket_Robin_Johansson
                 ["Chewwy", "1111"],
                 ["Luke", "9988"],  
                 ["Leia", "4545"],  
-                ["Han", "1234"],   
+                ["Han", "1234"]   
             ];
 
 
+        //If successful log in, you unlock method "MainMenu", then every page in the program is in its own method, each method takes you back to "MainMenu".
+        //If you chose to log out, it takes you back to "LogIn".
         static void Main(string[] args)
         {
 
@@ -52,12 +54,12 @@ namespace Biblioteket_Robin_Johansson
         //Back to MainMenu method:
         static void BackToMainMenu()
         {
-            Console.WriteLine("\nTryck enter för att återgå till huvudmenyn.");
-            Console.ReadLine();
+            Console.WriteLine("\nTryck valfri tangent för att återgå till huvudmenyn.");
+            Console.ReadKey();
             MainMenu();
         }
 
-        //Try parse method
+        //Try parse method, recieves min- and max value allowed:
         static int TryParse(int min, int max)
         {
             int userInput;
@@ -107,7 +109,7 @@ namespace Biblioteket_Robin_Johansson
 
                 case 5:
                     Console.WriteLine("\nDu loggas ut...");
-                    Console.ReadLine();
+                    Console.ReadKey();
                     LogIn();
                     break;
             }
@@ -122,12 +124,12 @@ namespace Biblioteket_Robin_Johansson
 
             for (int i = 0; i < books.Length; i++)
             {
-                //book stores every individual book
+                //book stores every individual book in "books"
                 string[] book = books[i];
                 //onLoan stores the users current value of every book from "usersLoanedBooks"
                 int onLoan = usersLoanedBooks[currentUser, i];
 
-                //If there are any books on loan, display that book and how many is on loan:
+                //If there are any books on loan, display that book and how many of that book the user has on loan:
                 if (onLoan > 0)
                 {
                     Console.WriteLine($"{book[1]}: {onLoan} ex.");
@@ -164,7 +166,6 @@ namespace Biblioteket_Robin_Johansson
             //If the user has loaned book(s):
             Console.WriteLine("Ange index-nummer på boken du vill lämna tillbaka:\n");
 
-            //Forloop looks through the books in books:
             for (int i = 0; i < books.Length; i++)
             {
                 //Array book stores each book in books:
@@ -181,7 +182,7 @@ namespace Biblioteket_Robin_Johansson
             // bookIndex = TryParse -1 because the array begins on 0.
             int bookIndex = TryParse(1, 5) - 1;
 
-            //If the balance for the book the user wants to return is more than 0, write this:
+            //If the balance of the book the user wants to return is more than 0, booksInStore + 1, usersLoanedBooks - 1.
             if (usersLoanedBooks[currentUser, bookIndex] > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -232,6 +233,7 @@ namespace Biblioteket_Robin_Johansson
                 BackToMainMenu();
             }
 
+            //If there are more than 0 of the book the user wants, booksInStore - 1, usersLoanedBooks + 1.
             if (booksInStore[bookIndex] > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -288,12 +290,12 @@ namespace Biblioteket_Robin_Johansson
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Välkommen {userName}!");
                     Console.ResetColor();
-                    Console.WriteLine("Tryck enter för att gå till menyn");
-                    Console.ReadLine();
+                    Console.WriteLine("Tryck valfri tangent för att gå till huvudmenyn");
+                    Console.ReadKey();
                     MainMenu();
                     success = true;
                 }
-                //For every failed login, 'attempts' subtracts by -1:
+                //For every failed login, 'attempts' - 1:
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
